@@ -1,0 +1,68 @@
+name: Автоматизация тестирования и развёртывания проекта
+
+on : 
+  push:
+    branches: [main] 
+
+jobs:
+  tests:
+    runs-on: ubuntu-22.04
+    env:
+      SECRET: ${{ secrets.DJANGO_SECRET }} 
+      DEBUG: ${{ secrets.DEBUG }} 
+      ALLOWED_HOSTS: ${{ secrets.ALLOWED }} 
+      DB_ENGINE: ${{ secrets.DB_ENGINE }} 
+      DB_USER: ${{ secrets.DB_USER }} 
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }} 
+      DB_NAME: ${{ secrets.DB_NAME }} 
+      DB_HOST: ${{ secrets.DB_HOST }} 
+      DB_PORT: ${{ secrets.DB_PORT }} 
+    services:
+      postgres_main:
+        image: postgres:12
+        env:
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        ports: 
+          - 5432:5432
+        options:
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Проверка изменений в репозитории
+        uses: actions/checkout@v3
+
+      - name: Установка Пайтон и окружения
+        uses: actions/setup-python@v3
+        with: 
+          python-version: 3.9
+
+      - name: Установка зависимотстей
+        run: pip install -r requirements-dev.txt
+
+      - name: Тестирование
+        run: python manage.py test
+        env:
+          SECRET_KEY: ${{ env.SECRET }}
+          DEBUG: ${{ env.DEBUG }}
+          ALLOWED_HOSTS: ${{ env.ALLOWED_HOSTS }}
+          ENGINE: ${{ env.DB_ENGINE }}
+          USER: ${{ env.DB_USER }}
+          PASSWORD: ${{ env.DB_PASSWORD }}
+          NAME: ${{ env.DB_NAME }}
+          HOST: ${{ env.DB_HOST }}
+          PORT: ${{ env.DB_PORT }}
+      
+      # - name: Развёртывание (деплой)
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ${{ secrets.SSH_USER }}
+      #     password: ${{ secrets.SSH_PASSWORD }}
+      #     script: expect /home/root3/django_cicd/deploy.exp 
+            
+
+      
