@@ -19,4 +19,4 @@ class CoursesViewSet(ModelViewSet):
 
 @api_view(['GET'])
 def sample_view(request):
-    return Response({'message': 'new data 1'})
+    return Response({'message': 'change data'})
