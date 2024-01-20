@@ -56,13 +56,13 @@ jobs:
           HOST: ${{ env.DB_HOST }}
           PORT: ${{ env.DB_PORT }}
       
-      # - name: Развёртывание (деплой)
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ${{ secrets.SSH_USER }}
-      #     password: ${{ secrets.SSH_PASSWORD }}
-      #     script: expect /home/root3/django_cicd/deploy.exp 
+      - name: Развёртывание (деплой)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: expect /home/root5/test_rep/deploy.exp 
             
 
       
