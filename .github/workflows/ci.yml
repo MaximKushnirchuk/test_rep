@@ -41,7 +41,7 @@ jobs:
           python-version: 3.9
 
       - name: Установка зависимотстей
-        run: pip install -r requirements-dev.txt
+        run: pip install -r requirements.txt
 
       - name: Тестирование
         run: python manage.py test
